@@ -1,21 +1,27 @@
 <html>
   <head>
+    <!-- jQuery is required -->
     <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <!-- oembed is optional, allows embedding youtube video -->
     <script src="jquery.oembed.js"></script>        
-    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-    </script>
+    <!-- mathjax is optional, allows latex formulas -->
+    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <!-- this is the actual markmin plugin -->
     <script src="markmin.js"></script>
+    <!-- limit the size of embedded images and video -->
     <style>
-      .target img { max-width:400px }
-      .target video {max-width:400px; }
+      .target img, .target video { max-width:400px; }
     </style>
   </head>
   <body>
+
     <textarea 
        class="source" 
        style="width:100%; height:100px;"
        onkeyup="jQuery('.target').markmin(jQuery('.source').val())"
     ></textarea>
+    
     <div class="target"></div>
+
   </body>
 </html>

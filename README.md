@@ -1,7 +1,9 @@
 markmin in javascript
 =====================
 
-Yet another markup language. This is a limited JS implementation of MARKMIN which is inspired by MARKDOWN and described here:
+Yet another markup language. 
+This is a limited JS implementation of MARKMIN as a jQuery plugin.
+MARKMIN which is inspired by MARKDOWN and is described here:
 
 http://www.web2py.com/init/static/markmin.html
 

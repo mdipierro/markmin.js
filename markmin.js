@@ -64,7 +64,7 @@ jQuery.fn.markmin = (function(){
                 });
             return html;
         }
-        return function(source, sanitize) {
+        return function(source, sanitize, callback) {
             var html = source;
             if(sanitize!==false & sanitize!==true) sanitize=true;
             html = html.replace(re_pre, M('<code><pre>{1}</pre></code>'));
@@ -99,5 +99,6 @@ jQuery.fn.markmin = (function(){
             jQuery(this).html(html);
             try { jQuery("a.oembed").oembed(); } catch(e) {};
             try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch(e) {};
+            if(callback) callback();
         };
     })();
