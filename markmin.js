@@ -91,7 +91,7 @@ jQuery.fn.markmin = (function(){
          [re_audio, M('<div class="mm-audio"><audio controls><source src="{1}"></audio></div>')],
          [re_video, M('<div class="mm-video"><audio controls><source src="{1}"></video></div>')],
          [re_frame, M('<iframe class="mm-video" src="{1}"></iframe>')],
-         [re_embed, M('<a class="mm-embed" src="{1}"></a>')],
+         [re_embed, M('<a class="mm-embed" href="{1}"></a>')],
          [re_email, MM('<a href="mailto:{1}">{1}</a>')],
          [re_link, MM('<a href="{1}">{1}</a>')],
          [re_h1, M('<h1>{1}</h1>')],
