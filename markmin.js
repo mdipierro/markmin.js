@@ -1,11 +1,19 @@
 jQuery.fn.markmin = (function(){
+        // all required regular expressions computed once and for all
         var re_pre = /``\n([\s\S]*?)\n``/g;
         var re_xml = /<(\w+)([^>]*)>([\s\S]*?)<\/\1>|<(\w+)([^>]*)\/>/g;
         var re_args = /(\w+)(\="[^\"]*"|\='[^\']*')?/g;
         var re_amp = /&/g;
         var re_gt = />/g;
         var re_lt = /</g;
-        var re_link = /\b(\w+:\/\/[^\'\"\s]+)/g;
+        var re_latex = /\$\$(.*?)\$\$/g;
+        var re_image = /image\:(\w+:\/\/[^\'\"\s]+)/g;
+        var re_audio = /audio\:(\w+:\/\/[^\'\"\s]+)/g;
+        var re_video = /video\:(\w+:\/\/[^\'\"\s]+)/g;
+        var re_frame = /frame\:(\w+:\/\/[^\'\"\s]+)/g;
+        var re_embed = /embed\:(\w+:\/\/[^\'\"\s]+)/g;
+        var re_email = /(^|[\W])([^\'\"\s\@]+\@[^\'\"\s\@]+)/g;
+        var re_link = /(^|[\W])(\w+:\/\/[^\'\"\s]+)/g;
         var re_h1 = /^#([^#].*)/gm;
         var re_h2 = /^##([^#].*)/gm;
         var re_h3 = /^###([^#].*)/gm;
@@ -16,92 +24,127 @@ jQuery.fn.markmin = (function(){
         var re_nn = /\n\n/g;
         var re_strong = /\*\*([^\s*][^*]*[^\s*])\*\*/g;
         var re_em = /''([^\s\'][^\']*[^\s\'])''/g;
+        var re_blockquote = /''\n([^\s\'][^\']*[^\s\'])\n''/g;
         var re_tt = /``([^\s`][^`]*[^\s`])``/g;
-        var re_li = /-\s+(.*)/gm;
-        var re_lili = /<\/li>\s+<li>/gm;
-        var re_ulli = /^<li>(.*)$/gm;
-        var re_liul = /^(.*)<\/li>$/gm;        
-        var image_ext = ['png','gif','jpg','jpeg','svg'];
-        var audio_ext = ['wav','mp3','ogg'];
-        var video_ext = ['mov','mpeg','mp4','mpeg4'];
-        var allowed_args = ['src','href','class','style'];
+        var re_ulli = /^\-\s+([^\n]*)/gm;
+        var re_olli = /^\+\s+([^\n]*)/gm;
+        var re_ulol = /<\/ul>\s*<ul>|<\/ol>\s*<ol>/g;
+        // encode html
         var encode = function(text) {
             text = text.replace(re_amp,'&amp;');
             text = text.replace(re_gt,'&gt;');
             text = text.replace(re_lt,'&lt;');
             return text;
         };
-        var M = function(txt) {
+        // function that does a replacement
+        var M = function(text) {
             return function(m,a,b) {
-                return txt.replace('{1}',a).replace('{2}',b);
-            }
+                return text.replace(/\{1\}/g,a).replace(/\{2\}/g,b);
+            };
         }; 
-        var link = function(m,url) {
-            var ext = url.split('.').pop().toLowerCase();
-            if(image_ext.indexOf(ext)>=0)
-                return '<img class="mm-image" src="'+url+'"/>';
-            if(audio_ext.indexOf(ext)>=0)
-                return '<div class="mm-audio"><audio controls><source src="'+url+'" type="audio/'+exp+'"></audio></div>';
-            if(video_ext.indexOf(ext)>=0)
-                return '<div class="mm-video"><video controls><source src="'+url+'" type="audio/'+exp+'"></video></div>';
-            return '<div class="mm-oembed"><a class="oembed" href="'+url+'">'+url+'</a></div>';
-        }
-        var sanitizeHTML = function(html) {
+        // replace text iff not preceved by :'"
+        var MM = function(text) {
+            return function(m,a,b){ 
+                return (a==':'||a=="'"||a=='"')?(a+b):(a+text.replace(/\{1\}/g,b));
+            };
+        };
+        // list of default allowed HTML tags and attributes
+        var allowed_attributes = {
+            'a': ['href', 'title', 'target', 'class'], 'img/': ['src', 'alt', 'class'],
+            'blockquote': ['type', 'class'], 'td': ['colspan', 'class'],'center':['class'],
+            'b':['class'], 'br/':['class'],'i':['class'], 'li':['class'], 'ol':['class'],
+            'ul':['class'], 'p':['class'], 'cite':['class'], 'code':['class'], 'pre':['class'],
+            'h1':['class'], 'h2':['class'], 'h3':['class'], 'h4':['class'], 'h5':['class'], 
+            'h6':['class'], 'table':['class'], 'tr':['class'], 'div':['class'],
+            'strong':['class'],'span':['class'],
+        };
+        // removed unwanted tags and attributes
+        var sanitizeHTML = function(html,settings) {
             html = html.replace(re_xml,function(m,a,b,c) {
                     if(a===undefined) return m;
                     a = a.toLowerCase();
-                    if(a=='script' || a=='style') {
+                    var closed = c===undefined;
+                    if((!closed && !(a in settings.allowed_attributes)) ||
+                       (closed && !(a+'/' in settings.allowed_attributes))) {
                         return encode(m);
                     } else {           
-                        if(c===undefined) return '<'+a+'/>';
+                        key = (closed)?(a+'/'):a;
                         d = [];
                         b.replace(re_args,function(m,p1,p2){
-                                if(allowed_args.indexOf(p1)>=0)
+                                if(settings.allowed_attributes[key].indexOf(p1)>=0)
                                     d.push(m);
-                                console.log(m);
-                            });                        
-                        var tag_open = '<'+a+(d?' ':'')+d.join(' ')+'>';
-                        return tag_open+sanitizeHTML(c)+'</'+a+'>';
-                        
+                            });                                                
+                        var tag_open = '<'+a+(d?' ':'')+d.join(' ');
+                        console.log(tag_open);
+                        if(closed)
+                            return tag_open+'/>';
+                        else
+                            return tag_open+'>'+sanitizeHTML(c,settings)+'</'+a+'>';
                     }
                 });
             return html;
         }
-        return function(source, sanitize, callback) {
+        // main business rules
+        var rules = 
+        [[re_latex, function(m,a) {return '\\( '+encode(a)+'\\)';}],
+         [re_image, M('<img class="mm-image" src="{1}"/>')],
+         [re_audio, M('<div class="mm-audio"><audio controls><source src="{1}"></audio></div>')],
+         [re_video, M('<div class="mm-video"><audio controls><source src="{1}"></video></div>')],
+         [re_frame, M('<iframe class="mm-video" src="{1}"></iframe>')],
+         [re_embed, M('<a class="mm-embed" src="{1}"></a>')],
+         [re_email, MM('<a href="mailto:{1}">{1}</a>')],
+         [re_link, MM('<a href="{1}">{1}</a>')],
+         [re_h1, M('<h1>{1}</h1>')],
+         [re_h2, M('<h2>{1}</h2>')],
+         [re_h3, M('<h3>{1}</h3>')],
+         [re_h4, M('<h4>{1}</h4>')],
+         [re_h5, M('<h5>{1}</h5>')],
+         [re_h6, M('<h6>{1}</h6>')],
+         [re_strong, M('<strong>{1}</strong>')],
+         [re_em, M('<em>{1}</em>')],
+         [re_blockquote, M('<blockquote>{1}</blockquote>')],
+         [re_tt, M('<tt>{1}</tt>')],
+         [re_ulli, M('<ul><li>{1}</li></ul>')],
+         [re_olli, M('<ol><li>{1}</li></ol>')],
+         [re_ulol, M('')],
+         [re_sn,'\n'],
+         [re_nn,'<br/>']
+         ];
+        // default settings for the function below
+        var defaults = {sanitize:true,
+                        allowed_attributes:allowed_attributes,
+                        callback:null,
+                        rules_post:[]};
+        // the only exposed function!
+        return function(source, settings) {
+            settings = jQuery.extend({},defaults,settings);
             var html = source;
-            if(sanitize!==false & sanitize!==true) sanitize=true;
+            // deal with preformatted code
             html = html.replace(re_pre, function(m,a) { 
                     return '<code><pre>'+encode(a)+'</pre></code>'; 
                 });
             code = [];
+            // remove alreday formatted HTML and put it back in place later
             html = html.replace(re_xml,function(m){
-                    if(sanitize) m = sanitizeHTML(m);
+                    if(settings.sanitize) m = sanitizeHTML(m,settings);
                     code.push(m);
                     return "__MATCH:"+(code.length-1)+"__";
                 });
+            // there should be no more html tags, apply business rules
             html = encode(html);
-            html = html.replace(re_link, link);
-            html = html.replace(re_h1, M('<h1>{1}</h1>'));
-            html = html.replace(re_h2, M('<h2>{1}</h2>'));
-            html = html.replace(re_h3, M('<h3>{1}</h3>'));
-            html = html.replace(re_h4, M('<h4>{1}</h4>'));
-            html = html.replace(re_h5, M('<h5>{1}</h5>'));
-            html = html.replace(re_h6, M('<h6>{1}</h6>'));
-            html = html.replace(re_sn,'\n');
-            html = html.replace(re_nn,'<br/>');
-            html = html.replace(re_strong, M('<strong>{1}</strong>'));
-            html = html.replace(re_em, M('<em>{1}</em>'));
-            html = html.replace(re_tt, M('<tt>{1}</tt>'));
-            html = html.replace(re_li, M('<li>{1}</li>'));
-            html = html.replace(re_lili, M('</li><li>'));
-            html = html.replace(re_ulli, M('<ul><li>{1}'));
-            html = html.replace(re_liul, M('{1}</li></ul>'));
-            for(var k=0; k<code.length; k++) {
-                html = html.replace("__MATCH:"+k+"__",code[k]);
-            }
+            for(var k=0; k<rules.length; k++) html = html.replace(rules[k][0],rules[k][1]);
+            // then apply optional rules
+            if(settings.post_rules)
+                for(var k=0; k<settings.rules_post.length; k++) 
+                    html = html.replace(settings.rules_post[k][0],settings.rules_post[k][1]);
+            // put back pre formatted code and HTML
+            for(var k=0; k<code.length; k++) html = html.replace("__MATCH:"+k+"__",code[k]);
+            // display
             jQuery(this).html(html);
-            try { jQuery("a.oembed").oembed(); } catch(e) {};
+            // optionally format with ombed and mathjax
             try { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); } catch(e) {};
-            if(callback) callback();
+            try { jQuery("a.mm-embed").oembed(); } catch(e) {};
+            // or whatever the user wants
+            if(settings.callback) settings.callback();
         };
     })();
