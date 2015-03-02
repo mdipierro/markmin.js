@@ -25,6 +25,12 @@ jQuery.fn.markmin = (function(){
         var audio_ext = ['wav','mp3','ogg'];
         var video_ext = ['mov','mpeg','mp4','mpeg4'];
         var allowed_args = ['src','href','class','style'];
+        var encode = function(text) {
+            text = text.replace(re_amp,'&amp;');
+            text = text.replace(re_gt,'&gt;');
+            text = text.replace(re_lt,'&lt;');
+            return text;
+        };
         var M = function(txt) {
             return function(m,a,b) {
                 return txt.replace('{1}',a).replace('{2}',b);
@@ -33,22 +39,19 @@ jQuery.fn.markmin = (function(){
         var link = function(m,url) {
             var ext = url.split('.').pop().toLowerCase();
             if(image_ext.indexOf(ext)>=0)
-                return '<img src="'+url+'"/>';
+                return '<img class="mm-image" src="'+url+'"/>';
             if(audio_ext.indexOf(ext)>=0)
-                return '<audio controls><source src="'+url+'" type="audio/'+exp+'"></audio>';
+                return '<div class="mm-audio"><audio controls><source src="'+url+'" type="audio/'+exp+'"></audio></div>';
             if(video_ext.indexOf(ext)>=0)
-                return '<video controls><source src="'+url+'" type="audio/'+exp+'"></video>';
-            return '<a class="oembed" href="'+url+'">'+url+'</a>';
+                return '<div class="mm-video"><video controls><source src="'+url+'" type="audio/'+exp+'"></video></div>';
+            return '<div class="mm-oembed"><a class="oembed" href="'+url+'">'+url+'</a></div>';
         }
         var sanitizeHTML = function(html) {
             html = html.replace(re_xml,function(m,a,b,c) {
                     if(a===undefined) return m;
                     a = a.toLowerCase();
                     if(a=='script' || a=='style') {
-                        m = m.replace(re_amp,'&amp;');
-                        m = m.replace(re_gt,'&gt;');
-                        m = m.replace(re_lt,'&lt;');
-                        return m;
+                        return encode(m);
                     } else {           
                         if(c===undefined) return '<'+a+'/>';
                         d = [];
@@ -67,16 +70,16 @@ jQuery.fn.markmin = (function(){
         return function(source, sanitize, callback) {
             var html = source;
             if(sanitize!==false & sanitize!==true) sanitize=true;
-            html = html.replace(re_pre, M('<code><pre>{1}</pre></code>'));
+            html = html.replace(re_pre, function(m,a) { 
+                    return '<code><pre>'+encode(a)+'</pre></code>'; 
+                });
             code = [];
             html = html.replace(re_xml,function(m){
                     if(sanitize) m = sanitizeHTML(m);
                     code.push(m);
                     return "__MATCH:"+(code.length-1)+"__";
                 });
-            html = html.replace(re_amp,'&amp;');
-            html = html.replace(re_gt,'&gt;');
-            html = html.replace(re_lt,'&lt;');
+            html = encode(html);
             html = html.replace(re_link, link);
             html = html.replace(re_h1, M('<h1>{1}</h1>'));
             html = html.replace(re_h2, M('<h2>{1}</h2>'));
