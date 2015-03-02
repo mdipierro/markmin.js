@@ -7,6 +7,11 @@ MARKMIN which is inspired by MARKDOWN and is described here:
 
 http://www.web2py.com/init/static/markmin.html
 
+Demo
+======
+
+http://experts4solutions.com/markmin2
+
 License
 =======
 
