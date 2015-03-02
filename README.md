@@ -12,6 +12,13 @@ Demo
 
 http://experts4solutions.com/markmin2
 
+Why markmin?
+============
+- It is designed to support automatic embedding of images, audio, video
+- Supports Latex (if mathjax is available)
+- Supports the OEmbed protocol (if jquery.oembed.js is available)
+- It allows embedded HTML but sanitizes it
+
 License
 =======
 
