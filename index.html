@@ -1,0 +1,21 @@
+<html>
+  <head>
+    <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="jquery.oembed.js"></script>        
+    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    <script src="markmin.js"></script>
+    <style>
+      .target img { max-width:400px }
+      .target video {max-width:400px; }
+    </style>
+  </head>
+  <body>
+    <textarea 
+       class="source" 
+       style="width:100%; height:100px;"
+       onkeyup="jQuery('.target').markmin(jQuery('.source').val())"
+    ></textarea>
+    <div class="target"></div>
+  </body>
+</html>
