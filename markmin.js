@@ -1,7 +1,7 @@
 jQuery.fn.markmin = (function(){
         // all required regular expressions computed once and for all
         var re_pre = /``\n([\s\S]*?)\n``/g;
-        var re_xml = /<(\w+)([^>]*)>([\s\S]*?)<\/\1>|<(\w+)([^>]*)\/>/g;
+        var re_xml = /<(\w+)([^>]*)>([^<>]*?)<\/\1>|<(\w+)([^>]*)\/>/g;
         var re_args = /(\w+)(\="[^\"]*"|\='[^\']*')?/g;
         var re_amp = /&/g;
         var re_gt = />/g;
@@ -125,11 +125,16 @@ jQuery.fn.markmin = (function(){
                 });
             code = [];
             // remove alreday formatted HTML and put it back in place later
-            html = html.replace(re_xml,function(m){
-                    if(settings.sanitize) m = sanitizeHTML(m,settings);
-                    code.push(m);
-                    return "__MATCH:"+(code.length-1)+"__";
-                });
+            old_html = null;
+            while(old_html!=html) {
+                old_html = html;
+                html = html.replace(re_xml,function(m){
+                        if(settings.sanitize) m = sanitizeHTML(m,settings);
+                        code.push(m);
+                        console.log(html)
+                        return "__MATCH:"+(code.length-1)+"__";
+                    });
+            }
             // there should be no more html tags, apply business rules
             html = encode(html);
             for(var k=0; k<rules.length; k++) html = html.replace(rules[k][0],rules[k][1]);
@@ -138,7 +143,8 @@ jQuery.fn.markmin = (function(){
                 for(var k=0; k<settings.rules_post.length; k++) 
                     html = html.replace(settings.rules_post[k][0],settings.rules_post[k][1]);
             // put back pre formatted code and HTML
-            for(var k=0; k<code.length; k++) html = html.replace("__MATCH:"+k+"__",code[k]);
+            for(var k=code.length-1; k>=0; k--) 
+                html = html.replace("__MATCH:"+k+"__",code[k]);
             // display
             jQuery(this).html(html);
             // optionally format with ombed and mathjax
