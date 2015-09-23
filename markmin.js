@@ -1,6 +1,6 @@
 jQuery.fn.markmin = (function(){
         // all required regular expressions computed once and for all
-        var re_pre = /``\n([\s\S]*?)\n``/g;
+        var re_pre = /``(\s([\s\S]*?)|([\s\S]*?)\s)``/g;
         var re_xml = /<(\w+)([^>]*)>([^<>]*?)<\/\1>|<(\w+)([^>]*)\/>/g;
         var re_args = /(\w+)(\="[^\"]*"|\='[^\']*')?/g;
         var re_amp = /&/g;
@@ -75,7 +75,6 @@ jQuery.fn.markmin = (function(){
                                     d.push(m);
                             });                                                
                         var tag_open = '<'+a+(d?' ':'')+d.join(' ');
-                        console.log(tag_open);
                         if(closed)
                             return tag_open+'/>';
                         else
@@ -90,7 +89,7 @@ jQuery.fn.markmin = (function(){
          [re_image, M('<img class="mm-image" src="{1}"/>')],
          [re_audio, M('<div class="mm-audio"><audio controls><source src="{1}"></audio></div>')],
          [re_video, M('<div class="mm-video"><audio controls><source src="{1}"></video></div>')],
-         [re_frame, M('<iframe class="mm-video" src="{1}"></iframe>')],
+         [re_frame, M('<iframe class="mm-frame" src="{1}"></iframe>')],
          [re_embed, M('<a class="mm-embed" href="{1}"></a>')],
          [re_email, MM('<a href="mailto:{1}">{1}</a>')],
          [re_link, MM('<a href="{1}">{1}</a>')],
@@ -131,7 +130,6 @@ jQuery.fn.markmin = (function(){
                 html = html.replace(re_xml,function(m){
                         if(settings.sanitize) m = sanitizeHTML(m,settings);
                         code.push(m);
-                        console.log(html)
                         return "__MATCH:"+(code.length-1)+"__";
                     });
             }
