@@ -33,11 +33,11 @@ Syntax
 
 - Bold
     
-    **hello world**
+   **hello world**
 
 - Italic
    
-    ''hello world''
+   ''hello world''
 
     
 
@@ -46,12 +46,12 @@ Python Implementation
 
 A Python version of markmin with documenation can be found here
 
-    http://www.web2py.com/init/static/markmin.html
+  http://www.web2py.com/init/static/markmin.html
 
 Demo
 ======
 
-http://experts4solutions.com/markmin2
+  http://experts4solutions.com/markmin2
 
 Why markmin?
 ============
