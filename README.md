@@ -17,6 +17,7 @@ Tutorial
 
 Here is a nimalist application to use markmin:
 
+```html
     <div class="target"></div>
     <textarea class="source"></textarea>
     <!-- include mathjax for latex -->
@@ -27,18 +28,14 @@ Here is a nimalist application to use markmin:
        // when use types in textarea markmin text, render the html in the target div
        jQuery('.source').change(function(this){jQuery('.target.).markmin(jQuery(this).val());});
     </script>
+```
 
 Syntax
 ======
 
-- Bold
-    
-   **hello world**
+- Bold ```**hello world**```
 
-- Italic
-   
-   ''hello world''
-
+- Italic ```''hello world''```
     
 
 Python Implementation
