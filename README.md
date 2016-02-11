@@ -32,7 +32,8 @@ Here is a nimalist application to use markmin:
     <!-- (optional) include for oembed support -->
     <script src="jquery.oembed.js"></script>
 
-    <!-- include markmin -->
+    <!-- include jquery and markmin -->
+    <script src="jquery.js"></script>
     <script src="markmin.min.js"></script>
     <script>       
        // when use types in textarea markmin text, render the html in the target div
