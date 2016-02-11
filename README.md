@@ -11,6 +11,7 @@ MARKMIN is inspired by MARKDOWN but diverges from it in more than a few ways.
 - It supports latex via MathJax
 - It supports the oembed protocol
 - It supports tables
+- It does not use single delimiter to minimize conflicts
 
 Tutorial
 ========
@@ -37,37 +38,45 @@ Syntax
 
 - Italic ```''hello world''```
 
-- Verbatim (inline) ``hello world``
+- Verbatim (inline) ``` ``hello world`` ```
 
 - Verbatim (multiline) 
 
+```
     ``
     hello world
     ``
+```
 
 - list
 
-    - one
-    - two
-    - three    
+```
+- one
+- two
+- three    
+```
 
 - headers
 
-    # section
-    ## subsection
-    ### subsubsection
-    ...
+```
+# section
+## subsection
+### subsubsection
+...
+```
 
 - latex (double $ sign)
 
-    $$ \int _a ^b \sin(x) dx $$
+```
+$$ \int _a ^b \sin(x) dx $$
+```
 
 - links are automatic, just cut and paste a link in markmin code
-- images: prepend the link with __image:__
-- videos: prepend the link with __video:__
-- audio files: prepend the link with __audio:__
-- iframes: to embed a page in an iframe prepend the link with __frame:__
-- oembed protocol, prepend the link with __embed:__
+- images: prepend the link with ```image:```
+- videos: prepend the link with ```video:```
+- audio files: prepend the link with ```audio:```
+- iframes: to embed a page in an iframe prepend the link with ```frame:```
+- oembed protocol, prepend the link with ```embed:```
 
 Safe html can also be included in markmin and it will be rendered accordingly. See the demo below.   
 
