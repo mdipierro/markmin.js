@@ -21,7 +21,7 @@ jQuery.fn.markmin = (function(){
         var re_h5 = /^#####([^#].*)/gm;
         var re_h6 = /^######([^#].*)/gm;
         var re_sn = /[ \t]+\n/g;
-        var re_nn = /\n\n/g;
+        var re_nn = /\n\s*\n/g;
         var re_strong = /\*\*([^\s*][^*]*[^\s*])\*\*/g;
         var re_em = /''([^\s\'][^\']*[^\s\'])''/g;
         var re_blockquote = /''\n([^\s\'][^\']*[^\s\'])\n''/g;
@@ -57,6 +57,7 @@ jQuery.fn.markmin = (function(){
             'h1':['class'], 'h2':['class'], 'h3':['class'], 'h4':['class'], 'h5':['class'], 
             'h6':['class'], 'table':['class'], 'tr':['class'], 'div':['class'],
             'strong':['class'],'span':['class'],
+            'textarea':['name'],'input/':['name','type','checked']
         };
         // removed unwanted tags and attributes
         var sanitizeHTML = function(html,settings) {
@@ -135,7 +136,8 @@ jQuery.fn.markmin = (function(){
             }
             // there should be no more html tags, apply business rules
             html = encode(html);
-            for(var k=0; k<rules.length; k++) html = html.replace(rules[k][0],rules[k][1]);
+            for(var k=0; k<rules.length; k++)
+                html = html.replace(rules[k][0],rules[k][1]);
             // then apply optional rules
             if(settings.post_rules)
                 for(var k=0; k<settings.rules_post.length; k++) 
