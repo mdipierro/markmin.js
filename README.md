@@ -26,7 +26,7 @@ Here is a nimalist application to use markmin:
     <script src="markmin.min.js"></script>
     <script>       
        // when use types in textarea markmin text, render the html in the target div
-       jQuery('.source').change(function(this){jQuery('.target.).markmin(jQuery(this).val());});
+       jQuery('.source').change(function(this){jQuery('.target').markmin(jQuery(this).val());});
     </script>
 ```
 
@@ -36,7 +36,40 @@ Syntax
 - Bold ```**hello world**```
 
 - Italic ```''hello world''```
-    
+
+- Verbatim (inline) ``hello world``
+
+- Verbatim (multiline) 
+
+    ``
+    hello world
+    ``
+
+- list
+
+    - one
+    - two
+    - three    
+
+- headers
+
+    # section
+    ## subsection
+    ### subsubsection
+    ...
+
+- latex (double $ sign)
+
+    $$ \int _a ^b \sin(x) dx $$
+
+- links are automatic, just cut and paste a link in markmin code
+- images: prepend the link with __image:__
+- videos: prepend the link with __video:__
+- audio files: prepend the link with __audio:__
+- iframes: to embed a page in an iframe prepend the link with __frame:__
+- oembed protocol, prepend the link with __embed:__
+
+Safe html can also be included in markmin and it will be rendered accordingly. See the demo below.   
 
 Python Implementation
 =====================
