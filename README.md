@@ -13,6 +13,11 @@ MARKMIN is inspired by MARKDOWN but diverges from it in more than a few ways.
 - It supports tables
 - It does not use single delimiter to minimize conflicts
 
+Demo
+======
+
+  http://experts4solutions.com/markmin2
+
 Tutorial
 ========
 
@@ -87,10 +92,6 @@ A Python version of markmin with documenation can be found here
 
   http://www.web2py.com/init/static/markmin.html
 
-Demo
-======
-
-  http://experts4solutions.com/markmin2
 
 Why markmin?
 ============
@@ -114,6 +115,8 @@ Third party included libraries
 ==============================
 
 the jquery.oembed.js included here is an unmodified copy of
-https://github.com/starfishmod/jquery-oembed-all
+
+  https://github.com/starfishmod/jquery-oembed-all
+
 markmin.js does not require it but it will use if available.
 markmin will also use MathJax for latex if available.
