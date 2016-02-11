@@ -26,9 +26,13 @@ Here is a nimalist application to use markmin:
 ```html
     <div class="target"></div>
     <textarea class="source"></textarea>
-    <!-- include mathjax for latex -->
+
+    <!-- (optional) include mathjax for latex -->
     <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-    <!-- inclued markmin -->
+    <!-- (optional) include for oembed support -->
+    <script src="jquery.oembed.js"></script>
+
+    <!-- include markmin -->
     <script src="markmin.min.js"></script>
     <script>       
        // when use types in textarea markmin text, render the html in the target div
