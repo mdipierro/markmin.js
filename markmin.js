@@ -1,6 +1,6 @@
 jQuery.fn.markmin = (function(){
         // all required regular expressions computed once and for all
-        var re_pre = /``(\s([\s\S]*?)|([\s\S]*?)\s)``/g;
+        var re_pre = /``\s+([\s\S]*?)\s*``/g;        
         var re_xml = /<(\w+)([^>]*)>([^<>]*?)<\/\1>|<(\w+)([^>]*)\/>/g;
         var re_args = /(\w+)(\="[^\"]*"|\='[^\']*')?/g;
         var re_amp = /&/g;
@@ -13,7 +13,7 @@ jQuery.fn.markmin = (function(){
         var re_frame = /frame\:(\w+:\/\/[^\'\"\s]+)/g;
         var re_embed = /embed\:(\w+:\/\/[^\'\"\s]+)/g;
         var re_email = /(^|[\W])([^\'\"\s\@]+\@[^\'\"\s\@]+)/g;
-        var re_link = /(^|[\W])(\w+:\/\/[^\'\"\s]+)/g;
+        var re_link = /(^|[\W])(\w+:\/\/[^\'\"\s\)\],;]+)/g;
         var re_h1 = /^#([^#].*)/gm;
         var re_h2 = /^##([^#].*)/gm;
         var re_h3 = /^###([^#].*)/gm;
@@ -25,10 +25,12 @@ jQuery.fn.markmin = (function(){
         var re_strong = /\*\*([^\s*][^*]*[^\s*])\*\*/g;
         var re_em = /''([^\s\'][^\']*[^\s\'])''/g;
         var re_blockquote = /''\n([^\s\'][^\']*[^\s\'])\n''/g;
-        var re_tt = /``([^\s`][^`]*[^\s`])``/g;
+        var re_tt = /``([^\s`][^`]*)``/g;
         var re_ulli = /^\-\s+([^\n]*)/gm;
         var re_olli = /^\+\s+([^\n]*)/gm;
         var re_ulol = /<\/ul>\s*<ul>|<\/ol>\s*<ol>/g;
+        var re_home1 = /\/\/HOME\//g;
+        var re_home2 = /\/\/HOME\/\//g;
         // encode html
         var encode = function(text) {
             text = text.replace(re_amp,'&amp;');
@@ -136,6 +138,9 @@ jQuery.fn.markmin = (function(){
             }
             // there should be no more html tags, apply business rules
             html = encode(html);
+            var location = window.location.href.split('/');
+            html = html.replace(re_home2,location.splice(0,4).join('/')+'/');
+            html = html.replace(re_home1,location.splice(0,3).join('/')+'/');
             for(var k=0; k<rules.length; k++)
                 html = html.replace(rules[k][0],rules[k][1]);
             // then apply optional rules
