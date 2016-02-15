@@ -14,6 +14,7 @@ jQuery.fn.markmin = (function(){
         var re_embed = /embed\:(\w+:\/\/[^\'\"\s]+)/g;
         var re_email = /(^|[\W])([^\'\"\s\@]+\@[^\'\"\s\@]+)/g;
         var re_link = /(^|[\W])(\w+:\/\/[^\'\"\s\)\],;]+)/g;
+        var re_named_link = /\[(.+?)\]\((.+?)\)/g;
         var re_h1 = /^#([^#].*)/gm;
         var re_h2 = /^##([^#].*)/gm;
         var re_h3 = /^###([^#].*)/gm;
@@ -95,6 +96,7 @@ jQuery.fn.markmin = (function(){
          [re_frame, M('<iframe class="mm-frame" src="{1}"></iframe>')],
          [re_embed, M('<a class="mm-embed" href="{1}"></a>')],
          [re_email, MM('<a href="mailto:{1}">{1}</a>')],
+         [re_named_link, M('<a href="{2}">{1}</a>')],
          [re_link, MM('<a href="{1}">{1}</a>')],
          [re_h1, M('<h1>{1}</h1>')],
          [re_h2, M('<h2>{1}</h2>')],
